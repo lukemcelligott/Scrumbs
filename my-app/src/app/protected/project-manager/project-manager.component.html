@@ -1,0 +1,185 @@
+<body>
+    <!-- Top nav bar -->
+    <app-nav></app-nav>
+
+    <!-- Left nav bar -->
+    <div>
+        <mat-drawer-container class="sidenav">
+            <mat-drawer mode="side" class="project-list" opened>
+                <h2 class="proj-header">Projects:
+                    <mat-card-actions class="proj-addBtn" align="end">
+                        <button mat-raised-button (click)="openAddProjectDialog()">Add</button>
+                    </mat-card-actions>
+                </h2>
+                <div *ngFor="let project of projects">
+                    <button mat-icon-button (click)="changeSelectedProject(project)">{{project.title}}</button>
+                    <br>
+                </div>
+            </mat-drawer>
+
+            <!-- For Engineer -->
+            <mat-drawer-content>
+                <div> <!--description card -->
+                    <mat-card class="description-card">
+                        <mat-card-title>
+                            {{selectedProj.title}}
+                        </mat-card-title>
+                        <mat-card-content>
+                            {{selectedProj.description}}
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+                <p>
+                <!-- Cards for varying project tasks -->
+                <mat-card class="project-card" fxFlex="25"> <!-- To Do -->
+                    <mat-card-title class="proj-card-title"> 
+                        To Do:                    
+                        <mat-card-actions class="addBtn" align="end" *ngIf="selectedProj._id.length > 0">
+                            <button mat-raised-button (click)="openAddTaskDialog()">Add</button>
+                        </mat-card-actions>
+                    </mat-card-title>
+                    <div>
+                        <mat-grid-list cols="2" rowHeight="150px" gutterSize="5px">
+                            <mat-grid-tile *ngFor="let task of selectedProj.taskList | filterStatusPipe:'to-do'">
+                                <mat-card fxFlex="100" fxAlign="stretch" class="task-card">
+                                    <mat-card-subtitle>
+                                        {{task.title}}
+                                    </mat-card-subtitle>
+                                    <mat-card-content>
+                                        {{task.description}}
+                                    <div>
+                                        <button mat-raised-button [matMenuTriggerFor]="menu" class="task-menu">Move To</button> <!-- Move Tasks-->
+                                        <mat-menu #menu="matMenu">
+                                            <button mat-menu-item (click)="updateTaskStatus('in-prog', task)">In Progress</button>
+                                            <button mat-menu-item (click)="updateTaskStatus('needs-approved', task)">Needs Approved</button>
+                                           <!-- <button mat-menu-item[value]="completed">Completed</button> -->
+                                        </mat-menu>
+                                    </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </mat-grid-tile>
+                        </mat-grid-list>
+                    </div>                 
+                </mat-card>
+
+                <mat-card class="project-card" fxFlex="25"> <!-- In Progress -->
+                    <mat-card-title class="proj-card-title">
+                        In Progress:
+                    </mat-card-title>
+                    <!-- <mat-card-actions class="addBtn" align="end">
+                        <button mat-raised-button (click)="openDialog()">Add</button>
+                    </mat-card-actions> -->
+                    <div>
+                        <mat-grid-list cols="2" rowHeight="150px" gutterSize="5px">
+                            <mat-grid-tile *ngFor="let task of selectedProj.taskList | filterStatusPipe:'in-prog'">
+                                <mat-card fxFlex="100" fxAlign="stretch" class="task-card">
+                                    <mat-card-subtitle>
+                                        {{task.title}}
+                                    </mat-card-subtitle>
+                                    <mat-card-content>
+                                        {{task.description}}
+                                    <div>
+                                        <button mat-raised-button [matMenuTriggerFor]="menu" class="task-menu">Move To</button> <!-- Move Tasks-->
+                                        <mat-menu #menu="matMenu">
+                                            <button mat-menu-item (click)="updateTaskStatus('to-do', task)">To Do</button>
+                                            <button mat-menu-item (click)="updateTaskStatus('needs-approved', task)">Needs Approved</button>
+                                           <!-- <button mat-menu-item[value]="completed">Completed</button> -->
+                                        </mat-menu>
+                                    </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </mat-grid-tile>
+                        </mat-grid-list>
+                    </div>  
+                </mat-card>
+
+                <mat-card class="project-card" fxFlex="25"> <!-- Needs Approved -->
+                    <mat-card-title class="proj-card-title">
+                        Needs Approved:
+                    </mat-card-title>
+                    <!-- <mat-card-actions class="addBtn" align="end">
+                        <button mat-raised-button (click)="openDialog()">Add</button>
+                    </mat-card-actions> -->
+                    <div>
+                        <mat-grid-list cols="2" rowHeight="150px" gutterSize="5px">
+                            <mat-grid-tile *ngFor="let task of selectedProj.taskList | filterStatusPipe:'needs-approved'">
+                                <mat-card fxFlex="100" fxAlign="stretch" class="task-card">
+                                    <mat-card-subtitle>
+                                        {{task.title}}
+                                    </mat-card-subtitle>
+                                    <mat-card-content>
+                                        {{task.description}}
+                                    <div>
+                                        <button mat-raised-button [matMenuTriggerFor]="menu" class="task-menu">Move To</button> <!-- Move Tasks-->
+                                        <mat-menu #menu="matMenu">
+                                            <button mat-menu-item (click)="updateTaskStatus('to-do', task)">To Do</button>
+                                            <button mat-menu-item (click)="updateTaskStatus('in-prog', task)">In Progress</button>
+                                            <button mat-menu-item (click)="updateTaskStatus('completed', task)">Approve</button> <!-- MASTER ONLY -->
+                                           <!-- <button mat-menu-item[value]="completed">Completed</button> -->
+                                        </mat-menu>
+                                    </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </mat-grid-tile>
+                        </mat-grid-list>
+                    </div>  
+                </mat-card>
+
+                <mat-card class="project-card" fxFlex="25"> <!-- Completed -->
+                    <mat-card-title class="proj-card-title">
+                        Completed:
+                    </mat-card-title>
+                   <!--  <mat-card-actions class="addBtn" align="end">
+                        <button mat-raised-button (click)="openDialog()">Add</button>
+                    </mat-card-actions> -->
+                    <div>
+                        <mat-grid-list cols="2" rowHeight="150px" gutterSize="5px">
+                            <mat-grid-tile *ngFor="let task of selectedProj.taskList | filterStatusPipe:'completed'">
+                                <mat-card fxFlex="100" fxAlign="stretch" class="task-card">
+                                    <mat-card-subtitle>
+                                        {{task.title}}
+                                    </mat-card-subtitle>
+                                    <mat-card-content>
+                                        {{task.description}}
+                                    </mat-card-content>
+                                </mat-card>
+                            </mat-grid-tile>
+                        </mat-grid-list>
+                    </div>
+                </mat-card>
+            </mat-drawer-content>
+
+            <!-- For Stakeholder -->
+            <mat-drawer-content *ngIf="this.isStake==true">
+                <div> <!--description card -->
+                    <mat-card class="description-card">
+                        <h3>
+                            Project: {{selectedProj.title}}
+                        </h3>
+                        <mat-card-content>
+                            Description: {{selectedProj.description}}
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+                <p>
+                <mat-card class="request-card" fxFlex="98">
+                    <mat-card-title>
+                        Submit a Request:
+                    </mat-card-title>
+                    <mat-card-subtitle>
+                        Request for Project:
+                        <br>
+                        {{selectedProj.title}}
+                    </mat-card-subtitle>
+                    <mat-form-field class="text-box" appearance="fill">
+                        <mat-label>Fill in request:</mat-label>
+                        <textarea matInput></textarea>
+                    </mat-form-field>
+                    <mat-card-actions class="request-btn">
+                        <button mat-raised-button id="request-btn">Submit Request</button>
+                    </mat-card-actions>
+                </mat-card>
+            </mat-drawer-content>
+        </mat-drawer-container>
+    </div>
+</body>

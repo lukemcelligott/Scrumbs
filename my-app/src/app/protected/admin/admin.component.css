@@ -1,0 +1,39 @@
+body{
+  background-color: lightgray;
+}  
+
+  mat-drawer {
+      width: 200px;
+    }
+  
+  .setting-list {
+      padding-left: 10px;
+    }
+  
+  .big-admin-card {
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: #DBE8D8;
+  }
+  
+  .admin-button {
+    background-color: #DBE8D8;
+}
+  
+.admin-card{
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  width: 420px;
+}
+
+
+.mat-button{
+  background-color: #DBE8D8;
+  margin-left: 15px;
+}
+
+table {
+  width: 100%;
+}
